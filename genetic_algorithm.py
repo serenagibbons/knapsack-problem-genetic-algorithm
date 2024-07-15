@@ -47,17 +47,13 @@ def cull_population(population, fitnesses, truncation_percent):
 
     return selected_population, selected_fitnesses
 
-def select_parents(population, fitnesses):
+def select_parents(population):
     """
     Randomly selects two chromosomes for reproduction.
     """
-    parent1 = population[random.randint(0, len(population) - 1)]
-    parent2 = population[random.randint(0, len(population) - 1)]
-
-    # Ensure parent1 != parent2
-    while parent1 == parent2:
-        # Reselect parent2
-        parent2 = population[random.randint(0, len(population) - 1)]
+    population_size = len(population)
+    parent1 = population[random.randint(0, population_size - 1)]
+    parent2 = population[random.randint(0, population_size - 1)]
 
     return parent1, parent2
 
@@ -80,15 +76,31 @@ def mutate(chromosome, mutation_rate):
     
     return chromosome
 
-def genetic_algorithm(items, capacity, population_size, generations, culling_rate, mutation_rate):
+def popluation_converges(population, weights, values, capacity, convergence_rate):
+    """
+    Determines if a specified percentage of the population has the same fitness value (the population has converged).
+    """
+    fitness_values = {}
+    for chromosome in population:
+        fitness = calculate_fitness(chromosome, weights, values, capacity)
+        fitness_values[fitness] = fitness_values.get(fitness, 0) + 1
+    
+    for fitness in fitness_values:
+        if fitness_values[fitness]/len(population) > convergence_rate:
+            return True
+
+    return False
+
+def genetic_algorithm(items, capacity, population_size, culling_rate, mutation_rate, convergence_rate):
     """
     Solve the knapsack problem using a genetic algorithm.
     """
     weights = [item['weight'] for item in items]
     values = [item['value'] for item in items]
     population = generate_population(population_size, len(items))
+    population_coverged = False
 
-    for _ in range(generations):
+    while not population_coverged:
         # Calculate fitnesses of each chromosome
         fitnesses = [calculate_fitness(chromosome, weights, values, capacity) for chromosome in population]
 
@@ -98,7 +110,7 @@ def genetic_algorithm(items, capacity, population_size, generations, culling_rat
         children = []
         for i in range(0, len(population)):
             # Select parents
-            parent1, parent2 = select_parents(population, fitnesses)
+            parent1, parent2 = select_parents(population)
 
             # Crossover
             crossover_point = random.randint(1, len(parent1) - 1)
@@ -112,6 +124,8 @@ def genetic_algorithm(items, capacity, population_size, generations, culling_rat
 
         # Add children to population
         population.extend(children)
+
+        population_coverged = popluation_converges(population, weights, values, capacity, convergence_rate)
     
     # Find the best chromosome in the final population
     best_chromosome_index = fitnesses.index(max(fitnesses))

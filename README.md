@@ -11,9 +11,10 @@ The goal is to fill the backpack to make it as valuable as possible without exce
 - Selection: allocating individuals for reproduction
     - Truncated rank-based selection (Culling): selecting the top k/2 individuals in the ranked list and producing the same number of offspring for each selection
 - Genetic operators (fringe operations): modify the phenotype to obtain a new individual
-    - Mutation: insert a single-point mutation at a small percentage to modify a single gene of an individual
+    - Mutation: insert a single-point mutation at a small percentage (0.05) to modify a single gene of an individual
     - Crossover: given two individuals, produce a new one that has elements of each by randomly selecting a point on each of the two individuals and swapping the genetic material around this point
 - Fitness function: the total value of the chromosome
+- Termination: the population converges when 75% of the chromosomes in the population have the same fitness value
 
 ## Instructions
 Run the program in the command line or terminal using the command `python main.py` in the root directory of the project.

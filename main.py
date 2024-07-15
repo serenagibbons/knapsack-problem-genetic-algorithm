@@ -21,13 +21,13 @@ def main():
     ]
 
     # Hyperparameters for the genetic algorithm
-    population_size = 50
-    generations = 5
+    population_size = 100
+    convergence_rate = 0.75
     culling_rate = 0.5
     mutation_rate = 0.05
     
     # Run the genetic algorithm
-    best_chromosome, best_weight, best_value = genetic_algorithm(items, capacity, population_size, generations, culling_rate, mutation_rate)
+    best_chromosome, best_weight, best_value = genetic_algorithm(items, capacity, population_size, culling_rate, mutation_rate, convergence_rate)
 
     # Print the results
     print(f"Best chromosome: {best_chromosome}")
