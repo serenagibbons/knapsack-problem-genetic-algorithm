@@ -1,4 +1,5 @@
 import random
+import math
 
 def generate_population(population_size, item_count):
     """
@@ -99,7 +100,6 @@ def genetic_algorithm(items, capacity, population_size, culling_rate, mutation_r
     weights = [item['weight'] for item in items]
     values = [item['value'] for item in items]
     population = generate_population(population_size, len(items))
-
     population_coverged = False
 
     while not population_coverged:
@@ -110,7 +110,7 @@ def genetic_algorithm(items, capacity, population_size, culling_rate, mutation_r
         population, fitnesses = cull_population(population, fitnesses, culling_rate)
 
         children = []
-        for i in range(len(population)//2):
+        for i in range(math.ceil(len(population)/2)):
             # Select parents
             parent1, parent2 = select_parents(population)
 
@@ -123,11 +123,16 @@ def genetic_algorithm(items, capacity, population_size, culling_rate, mutation_r
             child2 = mutate(child2, mutation_rate)
             
             # Add children to children list
-            children.extend([child1, child2])
+            if (len(population) - len(children) > 1):
+                children.extend([child1, child2])
+            else:
+                # Account for creating an odd number of children
+                children.extend([child1])
 
         # Add children to population
         population.extend(children)
 
+        # Check if the population has converged
         population_coverged = popluation_converges(population, weights, values, capacity, convergence_rate)
     
     # Find the best chromosome in the final population
