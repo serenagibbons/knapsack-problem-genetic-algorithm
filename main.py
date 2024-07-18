@@ -22,7 +22,7 @@ def main():
 
     # Hyperparameters for the genetic algorithm
     population_size = 100
-    convergence_rate = 0.75
+    convergence_rate = 0.8
     culling_rate = 0.5
     mutation_rate = 0.05
     
